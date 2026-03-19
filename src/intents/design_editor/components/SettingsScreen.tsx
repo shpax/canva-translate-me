@@ -11,6 +11,7 @@ import { useIntl } from "react-intl";
 import { apiKeyStore } from "../lib/apiKeyStore";
 import { settingsStore } from "../lib/settingsStore";
 import { LANGUAGES } from "../lib/languages";
+import { DUMMY_API_KEY } from "../lib/mockTranslation";
 
 export interface SettingsScreenProps {
   onBack: () => void;
@@ -40,7 +41,7 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
   }
 
   function handleSave() {
-    if (!newKey.trim().startsWith("sk-ant-")) {
+    if (!newKey.trim().startsWith("sk-ant-") && newKey.trim() !== DUMMY_API_KEY) {
       setError(true);
       return;
     }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, FormField, Rows, Text, Title } from "@canva/app-ui-kit";
 import { useIntl } from "react-intl";
 import { apiKeyStore } from "../lib/apiKeyStore";
+import { DUMMY_API_KEY } from "../lib/mockTranslation";
 
 export interface KeySetupScreenProps {
   onSaved: () => void;
@@ -14,7 +15,7 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
   const intl = useIntl();
 
   function handleSave() {
-    if (!value.trim().startsWith("sk-ant-")) {
+    if (!value.trim().startsWith("sk-ant-") && value.trim() !== DUMMY_API_KEY) {
       setError(true);
       return;
     }
