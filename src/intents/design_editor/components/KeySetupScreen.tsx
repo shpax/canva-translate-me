@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, FormField, Rows, Text, Title } from "@canva/app-ui-kit";
+import { useIntl } from "react-intl";
 import { apiKeyStore } from "../lib/apiKeyStore";
 
 export interface KeySetupScreenProps {
@@ -10,6 +11,7 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
   const [value, setValue] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [error, setError] = useState(false);
+  const intl = useIntl();
 
   function handleSave() {
     if (!value.trim().startsWith("sk-ant-")) {
@@ -20,23 +22,30 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
     onSaved();
   }
 
+  const titleText = intl.formatMessage({ id: "keySetup.title", defaultMessage: "Setup — Anthropic API Key" });
+  const descText = intl.formatMessage({ id: "keySetup.description", defaultMessage: "Your key is stored only in this browser (localStorage). It is never sent anywhere except directly to Anthropic." });
+  const fieldLabel = intl.formatMessage({ id: "keySetup.fieldLabel", defaultMessage: "Anthropic API key" });
+  const errorText = intl.formatMessage({ id: "keySetup.error", defaultMessage: "Must start with sk-ant-" });
+  const placeholder = intl.formatMessage({ id: "keySetup.placeholder", defaultMessage: "sk-ant-..." });
+  const showKeyLabel = intl.formatMessage({ id: "keySetup.showKey", defaultMessage: "Show key" });
+  const hideKeyLabel = intl.formatMessage({ id: "keySetup.hideKey", defaultMessage: "Hide key" });
+  const saveLabel = intl.formatMessage({ id: "keySetup.saveButton", defaultMessage: "Save and continue" });
+  const helpText = intl.formatMessage({ id: "keySetup.helpText", defaultMessage: "Get your key at console.anthropic.com → API Keys" });
+
   return (
     <Rows spacing="2u">
-      <Title size="small">Setup — Anthropic API Key</Title>
-      <Text size="small" tone="secondary">
-        Your key is stored only in this browser (localStorage). It is never
-        sent anywhere except directly to Anthropic.
-      </Text>
+      <Title size="small">{titleText}</Title>
+      <Text size="small" tone="secondary">{descText}</Text>
 
       <FormField
-        label="Anthropic API key"
-        error={error ? "Must start with sk-ant-" : undefined}
+        label={fieldLabel}
+        error={error ? errorText : undefined}
         control={(props) => (
           <input
             {...props}
             type={showKey ? "text" : "password"}
             value={value}
-            placeholder="sk-ant-..."
+            placeholder={placeholder}
             onChange={(e) => {
               setValue(e.target.value);
               setError(false);
@@ -57,16 +66,14 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
       />
 
       <Button variant="tertiary" onClick={() => setShowKey((v) => !v)}>
-        {showKey ? "Hide key" : "Show key"}
+        {showKey ? hideKeyLabel : showKeyLabel}
       </Button>
 
       <Button variant="primary" onClick={handleSave} stretch disabled={!value.trim()}>
-        Save and continue
+        {saveLabel}
       </Button>
 
-      <Text size="small" tone="secondary">
-        Get your key at console.anthropic.com → API Keys
-      </Text>
+      <Text size="small" tone="secondary">{helpText}</Text>
     </Rows>
   );
 }

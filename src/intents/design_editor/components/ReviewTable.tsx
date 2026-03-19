@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Badge,
   Box,
@@ -8,6 +7,7 @@ import {
   Rows,
   Text,
 } from "@canva/app-ui-kit";
+import { useIntl } from "react-intl";
 import { TranslationEntry, TranslationVariant } from "../lib/types";
 import * as styles from "styles/components.css";
 
@@ -20,9 +20,6 @@ export interface ReviewTableProps {
   onCancel: () => void;
 }
 
-const cancelLabel = "Cancel";
-const resetLabel = "Reset";
-
 export function ReviewTable({
   entries,
   onApply,
@@ -31,12 +28,25 @@ export function ReviewTable({
   onRevert,
   onCancel,
 }: ReviewTableProps) {
+  const intl = useIntl();
   const unappliedCount = entries.filter((e) => !e.appliedVariant).length;
   const appliedCount = entries.length - unappliedCount;
-  const finishLabel =
-    appliedCount > 0
-      ? `Finish (${appliedCount} of ${entries.length} applied)`
-      : "Finish without applying";
+
+  const elementsFoundText = intl.formatMessage(
+    { id: "review.elementsFound", defaultMessage: "{count} elements found" },
+    { count: entries.length },
+  );
+  const cancelLabel = intl.formatMessage({ id: "review.cancelButton", defaultMessage: "Cancel" });
+  const useALabel = intl.formatMessage({ id: "review.useAButton", defaultMessage: "Use A" });
+  const useBLabel = intl.formatMessage({ id: "review.useBButton", defaultMessage: "Use B" });
+  const useCLabel = intl.formatMessage({ id: "review.useCButton", defaultMessage: "Use C" });
+  const resetLabel = intl.formatMessage({ id: "review.resetButton", defaultMessage: "Reset" });
+  const finishLabel = appliedCount > 0
+    ? intl.formatMessage(
+        { id: "review.finishWithCount", defaultMessage: "Finish ({appliedCount} of {total} applied)" },
+        { appliedCount, total: entries.length },
+      )
+    : intl.formatMessage({ id: "review.finishWithoutApplying", defaultMessage: "Finish without applying" });
 
   return (
     <div className={styles.scrollContainer}>
@@ -44,7 +54,7 @@ export function ReviewTable({
         <Columns spacing="1u" alignY="center">
           <Column>
             <Text>
-              <strong>{entries.length} elements found</strong>
+              <strong>{elementsFoundText}</strong>
             </Text>
           </Column>
           <Column width="content">
@@ -62,7 +72,7 @@ export function ReviewTable({
               disabled={unappliedCount === 0}
               stretch
             >
-              Use A
+              {useALabel}
             </Button>
           </Column>
           <Column>
@@ -72,7 +82,7 @@ export function ReviewTable({
               disabled={unappliedCount === 0}
               stretch
             >
-              Use B
+              {useBLabel}
             </Button>
           </Column>
           <Column>
@@ -82,7 +92,7 @@ export function ReviewTable({
               disabled={unappliedCount === 0}
               stretch
             >
-              Use C
+              {useCLabel}
             </Button>
           </Column>
         </Columns>
@@ -123,6 +133,13 @@ interface TranslationRowProps {
 }
 
 function TranslationRow({ entry, onApply }: TranslationRowProps) {
+  const intl = useIntl();
+
+  const appliedBadgeText = intl.formatMessage({ id: "row.appliedBadge", defaultMessage: "Applied" });
+  const applyLabel = intl.formatMessage({ id: "row.applyButton", defaultMessage: "Apply" });
+  const applyErrorText = intl.formatMessage({ id: "row.applyError", defaultMessage: " — could not find this text in the design" });
+  const notFoundText = intl.formatMessage({ id: "row.notFound", defaultMessage: " — not found in design" });
+
   if (entry.appliedVariant) {
     return (
       <Box padding="1u" borderRadius="standard" background="neutralSubtle">
@@ -134,7 +151,7 @@ function TranslationRow({ entry, onApply }: TranslationRowProps) {
             <Text size="small">{entry[entry.appliedVariant]}</Text>
           </Column>
           <Column width="content">
-            <Badge tone="positive" text="Applied" />
+            <Badge tone="positive" text={appliedBadgeText} />
           </Column>
         </Columns>
       </Box>
@@ -142,15 +159,14 @@ function TranslationRow({ entry, onApply }: TranslationRowProps) {
   }
 
   const canApply = entry.existsInDesign !== false;
-  const notFoundSuffix = canApply ? null : " — not found in design";
-  const applyLabel = "Apply";
+  const notFoundSuffix = canApply ? null : notFoundText;
 
   return (
     <Box padding="1u" borderRadius="standard" background="neutralSubtle">
       <Rows spacing="1u">
         <Text size="small" tone={entry.applyError ? "critical" : "secondary"}>
           {entry.original}
-          {entry.applyError && " — could not find this text in the design"}
+          {entry.applyError && applyErrorText}
           {notFoundSuffix}
         </Text>
 
@@ -158,7 +174,7 @@ function TranslationRow({ entry, onApply }: TranslationRowProps) {
           <Columns key={variant} spacing="1u" alignY="center">
             <Column>
               <Text size="small">
-                <strong>{variant.toUpperCase()}.</strong> {entry[variant]}
+                <strong>{variant.toUpperCase()}.</strong> {canApply ? entry[variant] : <span style={{ userSelect: "text", cursor: "text" }}>{entry[variant]}</span>}
               </Text>
             </Column>
             {canApply && (

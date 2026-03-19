@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Rows, Text, Title } from "@canva/app-ui-kit";
+import { Button, Rows, Title } from "@canva/app-ui-kit";
+import { useIntl } from "react-intl";
 
 export interface DoneScreenProps {
   count: number;
@@ -7,13 +8,22 @@ export interface DoneScreenProps {
 }
 
 export function DoneScreen({ count, onReset }: DoneScreenProps) {
+  const intl = useIntl();
+
+  const title = intl.formatMessage(
+    {
+      id: "done.title",
+      defaultMessage: "{count, plural, one {# element translated} other {# elements translated}}",
+    },
+    { count },
+  );
+  const buttonLabel = intl.formatMessage({ id: "done.resetButton", defaultMessage: "Translate another page" });
+
   return (
     <Rows spacing="2u">
-      <Title size="small">
-        {count} {count === 1 ? "element" : "elements"} translated
-      </Title>
+      <Title size="small">{title}</Title>
       <Button variant="primary" onClick={onReset} stretch>
-        Translate another page
+        {buttonLabel}
       </Button>
     </Rows>
   );

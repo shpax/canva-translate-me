@@ -7,6 +7,7 @@ import {
   Text,
   Title,
 } from "@canva/app-ui-kit";
+import { useIntl } from "react-intl";
 import { apiKeyStore } from "../lib/apiKeyStore";
 import { settingsStore } from "../lib/settingsStore";
 import { LANGUAGES } from "../lib/languages";
@@ -29,6 +30,7 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
   const [error, setError] = useState(false);
   const [saved, setSaved] = useState(false);
   const [langCode, setLangCode] = useState(() => settingsStore.getLanguageCode());
+  const intl = useIntl();
 
   const currentKey = apiKeyStore.get();
 
@@ -54,19 +56,32 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
     onKeyCleared();
   }
 
+  const backAriaLabel = intl.formatMessage({ id: "settings.backAriaLabel", defaultMessage: "Back" });
+  const titleText = intl.formatMessage({ id: "settings.title", defaultMessage: "Settings" });
+  const langFieldLabel = intl.formatMessage({ id: "settings.langFieldLabel", defaultMessage: "Target language" });
+  const currentKeyLabel = intl.formatMessage({ id: "settings.currentKeyLabel", defaultMessage: "Current key" });
+  const replaceFieldLabel = intl.formatMessage({ id: "settings.replaceFieldLabel", defaultMessage: "Replace with a new key" });
+  const errorText = intl.formatMessage({ id: "settings.error", defaultMessage: "Must start with sk-ant-" });
+  const placeholder = intl.formatMessage({ id: "settings.placeholder", defaultMessage: "sk-ant-..." });
+  const showKeyLabel = intl.formatMessage({ id: "settings.showKey", defaultMessage: "Show key" });
+  const hideKeyLabel = intl.formatMessage({ id: "settings.hideKey", defaultMessage: "Hide key" });
+  const savedLabel = intl.formatMessage({ id: "settings.savedButton", defaultMessage: "Saved!" });
+  const saveNewKeyLabel = intl.formatMessage({ id: "settings.saveNewKeyButton", defaultMessage: "Save new key" });
+  const clearLabel = intl.formatMessage({ id: "settings.clearButton", defaultMessage: "Clear saved key" });
+
   return (
     <Rows spacing="2u">
       <Button
         variant="tertiary"
         icon={() => <span>←</span>}
         onClick={onBack}
-        ariaLabel="Back"
+        ariaLabel={backAriaLabel}
       />
 
-      <Title size="small">Settings</Title>
+      <Title size="small">{titleText}</Title>
 
       <FormField
-        label="Target language"
+        label={langFieldLabel}
         control={(props) => (
           <Select
             {...props}
@@ -79,21 +94,19 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
       />
 
       <Rows spacing="1u">
-        <Text size="small" tone="secondary">
-          Current key
-        </Text>
+        <Text size="small" tone="secondary">{currentKeyLabel}</Text>
         <Text size="small">{maskKey(currentKey)}</Text>
       </Rows>
 
       <FormField
-        label="Replace with a new key"
-        error={error ? "Must start with sk-ant-" : undefined}
+        label={replaceFieldLabel}
+        error={error ? errorText : undefined}
         control={(props) => (
           <input
             {...props}
             type={showKey ? "text" : "password"}
             value={newKey}
-            placeholder="sk-ant-..."
+            placeholder={placeholder}
             onChange={(e) => {
               setNewKey(e.target.value);
               setError(false);
@@ -117,7 +130,7 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
       />
 
       <Button variant="tertiary" onClick={() => setShowKey((v) => !v)}>
-        {showKey ? "Hide key" : "Show key"}
+        {showKey ? hideKeyLabel : showKeyLabel}
       </Button>
 
       <Button
@@ -126,11 +139,11 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
         stretch
         disabled={!newKey.trim()}
       >
-        {saved ? "Saved!" : "Save new key"}
+        {saved ? savedLabel : saveNewKeyLabel}
       </Button>
 
       <Button variant="secondary" onClick={handleClear} stretch>
-        Clear saved key
+        {clearLabel}
       </Button>
     </Rows>
   );
