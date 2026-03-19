@@ -1,7 +1,7 @@
 # Support
 
 **App:** TranslateME
-**Contact:** [your@email.com]
+**Contact:** translate.splashy812@simplelogin.com
 
 ---
 
@@ -74,7 +74,7 @@ Open **Settings** (the gear icon on the main screen) and select your preferred l
 
 ## Contact Support
 
-If your issue is not covered above, email [your@email.com] with:
+If your issue is not covered above, email translate.splashy812@simplelogin.com with:
 
 1. A description of the problem and the steps to reproduce it
 2. The error message shown (if any)

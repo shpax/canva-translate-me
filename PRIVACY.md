@@ -1,7 +1,7 @@
 # Privacy Policy
 
-**Last updated:** [Date]
-**Developer:** [Your Name / Company Name]
+**Last updated:** March 18, 2026
+**Developer:** Maksym Piven
 
 ---
 
@@ -76,4 +76,4 @@ If this policy changes in a material way, the "Last updated" date at the top wil
 
 ## 7. Contact
 
-For privacy questions or data requests, contact: [your@email.com]
+For privacy questions or data requests, contact: translate.splashy812@simplelogin.com

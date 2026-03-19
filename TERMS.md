@@ -1,7 +1,7 @@
 # Terms and Conditions
 
-**Last updated:** [Date]
-**Developer:** [Your Name / Company Name]
+**Last updated:** March 18, 2026
+**Developer:** Maksym Piven
 
 ---
 
@@ -53,4 +53,4 @@ The developer reserves the right to update these Terms at any time. Continued us
 
 ## 9. Contact
 
-For questions about these Terms, contact: [your@email.com]
+For questions about these Terms, contact: translate.splashy812@simplelogin.com

@@ -1,5 +1,6 @@
 import { AppError, RawTranslationEntry, TranslationEntry } from "./types";
 import { Language, findLanguage } from "./languages";
+import { isDummyKey, MOCK_ENTRIES } from "./mockTranslation";
 
 function buildSystemPrompt(lang: Language): string {
   const { native } = lang;
@@ -58,6 +59,10 @@ export async function translateImageWithClaude(
   base64Image: string,
   config: AnthropicClientConfig,
 ): Promise<TranslationEntry[]> {
+  if (isDummyKey(config.apiKey)) {
+    return MOCK_ENTRIES;
+  }
+
   const fn = config.fetchFn ?? fetch;
   const lang: Language = findLanguage(config.targetLanguageCode ?? "en");
 

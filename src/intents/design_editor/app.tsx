@@ -3,6 +3,7 @@ import * as styles from "styles/components.css";
 import { AppError, AppStatus, TranslationEntry, TranslationVariant } from "./lib/types";
 import { apiKeyStore } from "./lib/apiKeyStore";
 import { settingsStore } from "./lib/settingsStore";
+import { isDummyKey } from "./lib/mockTranslation";
 import { applyAllTranslations, applyTranslation, checkTextsExist } from "./lib/applyTranslation";
 import { useExport } from "./hooks/useExport";
 import { useTranslate } from "./hooks/useTranslate";
@@ -49,8 +50,12 @@ export function App() {
       return;
     }
 
-    const found = await checkTextsExist(result.map((e) => e.original));
-    setEntries(result.map((e) => ({ ...e, existsInDesign: found.has(e.original.trim()) })));
+    if (isDummyKey(apiKey)) {
+      setEntries(result.map((e) => ({ ...e, existsInDesign: true })));
+    } else {
+      const found = await checkTextsExist(result.map((e) => e.original));
+      setEntries(result.map((e) => ({ ...e, existsInDesign: found.has(e.original.trim()) })));
+    }
     setStatus("reviewing");
   }, [runExport, translate]);
 
