@@ -43,6 +43,25 @@ export async function applyTranslation(
   return { matched };
 }
 
+// Read all editable plaintext strings from the current page.
+export async function readTextElements(): Promise<string[]> {
+  const texts: string[] = [];
+
+  await editContent(
+    { contentType: "richtext", target: "current_page" },
+    async (session) => {
+      for (const content of session.contents) {
+        if (content.deleted) continue;
+        const plaintext = content.readPlaintext().trim();
+        if (plaintext) texts.push(plaintext);
+      }
+      await session.sync();
+    },
+  );
+
+  return texts;
+}
+
 // Read-only scan: returns the subset of originals that exist on the current page.
 // Uses editContent (read path only) — sync() is called but nothing is replaced.
 export async function checkTextsExist(

@@ -16,15 +16,20 @@ export interface ReviewTableProps {
   onApply: (index: number, variant: TranslationVariant) => void;
   onApplyAll: (variant: TranslationVariant) => void;
   onFinish: () => void;
-  onReset: () => void;
+  onRevert: () => void;
+  onCancel: () => void;
 }
+
+const cancelLabel = "Cancel";
+const resetLabel = "Reset";
 
 export function ReviewTable({
   entries,
   onApply,
   onApplyAll,
   onFinish,
-  onReset,
+  onRevert,
+  onCancel,
 }: ReviewTableProps) {
   const unappliedCount = entries.filter((e) => !e.appliedVariant).length;
   const appliedCount = entries.length - unappliedCount;
@@ -43,42 +48,62 @@ export function ReviewTable({
             </Text>
           </Column>
           <Column width="content">
-            <Button
-              variant="secondary"
-              onClick={() => onApplyAll("a")}
-              disabled={unappliedCount === 0}
-            >
-              Use A
-            </Button>
-          </Column>
-          <Column width="content">
-            <Button
-              variant="secondary"
-              onClick={() => onApplyAll("b")}
-              disabled={unappliedCount === 0}
-            >
-              Use B
-            </Button>
-          </Column>
-          <Column width="content">
-            <Button
-              variant="secondary"
-              onClick={() => onApplyAll("c")}
-              disabled={unappliedCount === 0}
-            >
-              Use C
-            </Button>
-          </Column>
-          <Column width="content">
-            <Button variant="tertiary" onClick={onReset}>
-              Reset
+            <Button variant="tertiary" onClick={onCancel}>
+              {cancelLabel}
             </Button>
           </Column>
         </Columns>
 
-        <Button variant="primary" onClick={onFinish} stretch>
-          {finishLabel}
-        </Button>
+        <Columns spacing="1u">
+          <Column>
+            <Button
+              variant="secondary"
+              onClick={() => onApplyAll("a")}
+              disabled={unappliedCount === 0}
+              stretch
+            >
+              Use A
+            </Button>
+          </Column>
+          <Column>
+            <Button
+              variant="secondary"
+              onClick={() => onApplyAll("b")}
+              disabled={unappliedCount === 0}
+              stretch
+            >
+              Use B
+            </Button>
+          </Column>
+          <Column>
+            <Button
+              variant="secondary"
+              onClick={() => onApplyAll("c")}
+              disabled={unappliedCount === 0}
+              stretch
+            >
+              Use C
+            </Button>
+          </Column>
+        </Columns>
+
+        <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ flex: 2 }}>
+            <Button variant="primary" onClick={onFinish} stretch>
+              {finishLabel}
+            </Button>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Button
+              variant="secondary"
+              onClick={onRevert}
+              disabled={appliedCount === 0}
+              stretch
+            >
+              {resetLabel}
+            </Button>
+          </div>
+        </div>
 
         {entries.map((entry, index) => (
           <TranslationRow

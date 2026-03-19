@@ -48,6 +48,7 @@ If no translatable text is found, return an empty array: []`;
 export interface AnthropicClientConfig {
   apiKey: string;
   targetLanguageCode?: string;
+  existingTexts?: string[];
   fetchFn?: typeof fetch;
 }
 
@@ -65,6 +66,12 @@ export async function translateImageWithClaude(
 
   const fn = config.fetchFn ?? fetch;
   const lang: Language = findLanguage(config.targetLanguageCode ?? "en");
+
+  const { existingTexts } = config;
+  const userText =
+    existingTexts && existingTexts.length > 0
+      ? `Translate the text in this ad image.\n\nThe following are the exact editable text elements present in this design, each in its own text box. Translate each one individually and return a separate JSON entry for each:\n${existingTexts.map((t, i) => `${i + 1}. ${t}`).join("\n")}`
+      : "Translate the text in this ad image.";
 
   const res = await fn("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -99,7 +106,7 @@ export async function translateImageWithClaude(
             },
             {
               type: "text",
-              text: "Translate the text in this ad image.",
+              text: userText,
             },
           ],
         },

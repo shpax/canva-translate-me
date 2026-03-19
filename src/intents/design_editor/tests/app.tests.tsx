@@ -47,7 +47,7 @@ jest.mock("../lib/applyTranslation", () => ({
   applyAllTranslations: jest
     .fn()
     .mockResolvedValue(new Map([["Smart Energy", true]])),
-  checkTextsExist: jest.fn().mockResolvedValue(new Set(["Smart Energy"])),
+  readTextElements: jest.fn().mockResolvedValue(["Smart Energy"]),
 }));
 
 // ---------------------------------------------------------------------------
@@ -94,13 +94,15 @@ describe("App state machine", () => {
     expect(screen.queryByText(/translated/i)).not.toBeNull();
   });
 
-  it("resets to idle when Reset is clicked", async () => {
+  it("returns to idle when Cancel is clicked", async () => {
     renderInTestProvider(<App />);
     fireEvent.click(screen.getByText(/Analyze & Translate page/i));
 
     await waitFor(() => screen.getByText(/elements found/i));
-    fireEvent.click(screen.getByText("Reset"));
+    fireEvent.click(screen.getByText("Cancel"));
 
-    expect(screen.queryByText(/Analyze & Translate page/i)).not.toBeNull();
+    await waitFor(() => {
+      expect(screen.queryByText(/Analyze & Translate page/i)).not.toBeNull();
+    });
   });
 });

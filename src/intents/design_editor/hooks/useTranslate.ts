@@ -6,7 +6,7 @@ import {
 import { TranslationEntry, AppError } from "../lib/types";
 
 export interface UseTranslateResult {
-  translate: (base64Image: string) => Promise<TranslationEntry[] | null>;
+  translate: (base64Image: string, existingTexts?: string[]) => Promise<TranslationEntry[] | null>;
   isLoading: boolean;
   error: AppError | null;
 }
@@ -16,11 +16,11 @@ export function useTranslate(config: AnthropicClientConfig): UseTranslateResult 
   const [error, setError] = useState<AppError | null>(null);
 
   const translate = useCallback(
-    async (base64Image: string): Promise<TranslationEntry[] | null> => {
+    async (base64Image: string, existingTexts: string[] = []): Promise<TranslationEntry[] | null> => {
       setIsLoading(true);
       setError(null);
       try {
-        const entries = await translateImageWithClaude(base64Image, config);
+        const entries = await translateImageWithClaude(base64Image, { ...config, existingTexts });
         return entries;
       } catch (err) {
         setError(err as AppError);

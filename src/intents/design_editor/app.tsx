@@ -4,7 +4,7 @@ import { AppError, AppStatus, TranslationEntry, TranslationVariant } from "./lib
 import { apiKeyStore } from "./lib/apiKeyStore";
 import { settingsStore } from "./lib/settingsStore";
 import { isDummyKey } from "./lib/mockTranslation";
-import { applyAllTranslations, applyTranslation, checkTextsExist } from "./lib/applyTranslation";
+import { applyAllTranslations, applyTranslation, readTextElements } from "./lib/applyTranslation";
 import { useExport } from "./hooks/useExport";
 import { useTranslate } from "./hooks/useTranslate";
 import { KeySetupScreen } from "./components/KeySetupScreen";
@@ -43,7 +43,8 @@ export function App() {
     }
 
     setStatus("translating");
-    const result = await translate(base64Image);
+    const existingTexts = isDummyKey(apiKey) ? [] : await readTextElements();
+    const result = await translate(base64Image, existingTexts);
     if (!result) {
       setStatus("error");
       setError({ code: "claude_failed", message: "Translation service unavailable." });
@@ -53,8 +54,8 @@ export function App() {
     if (isDummyKey(apiKey)) {
       setEntries(result.map((e) => ({ ...e, existsInDesign: true })));
     } else {
-      const found = await checkTextsExist(result.map((e) => e.original));
-      setEntries(result.map((e) => ({ ...e, existsInDesign: found.has(e.original.trim()) })));
+      const existingSet = new Set(existingTexts.map((t) => t.trim()));
+      setEntries(result.map((e) => ({ ...e, existsInDesign: existingSet.has(e.original.trim()) })));
     }
     setStatus("reviewing");
   }, [runExport, translate]);
@@ -124,6 +125,31 @@ export function App() {
     setError(null);
   }, []);
 
+  const handleRevert = useCallback(async () => {
+    const applied = entries.filter((e) => e.appliedVariant);
+    if (applied.length === 0) return;
+
+    const pairs = applied.map((e) => ({
+      original: e[e.appliedVariant!],
+      translated: e.original,
+    }));
+
+    try {
+      await applyAllTranslations(pairs);
+    } catch {
+      // best effort — clear applied state regardless
+    }
+
+    setEntries((prev) =>
+      prev.map((e) => ({ ...e, appliedVariant: undefined, applyError: undefined })),
+    );
+  }, [entries]);
+
+  const handleCancel = useCallback(async () => {
+    await handleRevert();
+    handleReset();
+  }, [handleRevert, handleReset]);
+
   const handleKeyCleared = useCallback(() => {
     apiKeyStore.clear();
     setApiKey("");
@@ -170,7 +196,8 @@ export function App() {
           onApply={handleApply}
           onApplyAll={handleApplyAll}
           onFinish={handleFinish}
-          onReset={handleReset}
+          onRevert={handleRevert}
+          onCancel={handleCancel}
         />
       )}
 
