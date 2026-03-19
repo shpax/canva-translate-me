@@ -31,6 +31,7 @@ export function ReviewTable({
   const intl = useIntl();
   const unappliedCount = entries.filter((e) => !e.appliedVariant).length;
   const appliedCount = entries.length - unappliedCount;
+  const canApplyAny = entries.some((e) => !e.appliedVariant && e.existsInDesign !== false);
 
   const elementsFoundText = intl.formatMessage(
     { id: "review.elementsFound", defaultMessage: "{count} elements found" },
@@ -69,7 +70,7 @@ export function ReviewTable({
             <Button
               variant="secondary"
               onClick={() => onApplyAll("a")}
-              disabled={unappliedCount === 0}
+              disabled={!canApplyAny}
               stretch
             >
               {useALabel}
@@ -79,7 +80,7 @@ export function ReviewTable({
             <Button
               variant="secondary"
               onClick={() => onApplyAll("b")}
-              disabled={unappliedCount === 0}
+              disabled={!canApplyAny}
               stretch
             >
               {useBLabel}
@@ -89,7 +90,7 @@ export function ReviewTable({
             <Button
               variant="secondary"
               onClick={() => onApplyAll("c")}
-              disabled={unappliedCount === 0}
+              disabled={!canApplyAny}
               stretch
             >
               {useCLabel}

@@ -11,12 +11,13 @@ export function IdleScreen({ onAnalyze, onSettings }: IdleScreenProps) {
   const intl = useIntl();
 
   const step1 = intl.formatMessage({ id: "idle.step1", defaultMessage: "1. Open Settings and pick your target language." });
-  const step2 = intl.formatMessage({ id: "idle.step2", defaultMessage: "2. Click the button below — the app exports your current page and sends it to Claude AI." });
+  const step2 = intl.formatMessage({ id: "idle.step2", defaultMessage: "2. Click the button below — the app exports the current page and sends it to Claude AI." });
   const step3 = intl.formatMessage({ id: "idle.step3", defaultMessage: "3. Review the 3 translation variants generated for each text element." });
   const step4 = intl.formatMessage({ id: "idle.step4", defaultMessage: "4. Click Apply on the variant you like, or use Apply all A to apply everywhere at once." });
-  const noteText = intl.formatMessage({ id: "idle.note", defaultMessage: "Note: Only the current page is translated. Don't edit the design while reviewing." });
+  const currentPageNote = intl.formatMessage({ id: "idle.currentPageNote", defaultMessage: "Current page only — navigate to the page you want to translate before clicking the button." });
+  const doNotEditNote = intl.formatMessage({ id: "idle.doNotEditNote", defaultMessage: "Do not edit the design while reviewing translations." });
   const settingsAriaLabel = intl.formatMessage({ id: "idle.settingsAriaLabel", defaultMessage: "Settings" });
-  const analyzeLabel = intl.formatMessage({ id: "idle.analyzeButton", defaultMessage: "Analyze & Translate page" });
+  const analyzeLabel = intl.formatMessage({ id: "idle.analyzeButton", defaultMessage: "Translate current page" });
 
   return (
     <Rows spacing="2u">
@@ -41,7 +42,12 @@ export function IdleScreen({ onAnalyze, onSettings }: IdleScreenProps) {
         </Rows>
       </Box>
 
-      <Text tone="secondary" size="small">{noteText}</Text>
+      <Box background="neutral" borderRadius="standard" padding="1u">
+        <Rows spacing="1u">
+          <Text size="small"><strong>{currentPageNote}</strong></Text>
+          <Text size="small" tone="secondary">{doNotEditNote}</Text>
+        </Rows>
+      </Box>
 
       <Button variant="primary" onClick={onAnalyze} stretch>
         {analyzeLabel}

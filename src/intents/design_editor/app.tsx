@@ -37,26 +37,23 @@ export function App() {
 
     const base64Image = await runExport();
     if (!base64Image) {
-      setStatus("error");
-      setError({ code: "export_failed", message: "Couldn't export the design." });
+      // Export failed or was interrupted (e.g. user navigated away) — go back to idle
+      setStatus("idle");
+      setError(null);
       return;
     }
 
     setStatus("translating");
-    const existingTexts = isDummyKey(apiKey) ? [] : await readTextElements();
-    const result = await translate(base64Image, existingTexts);
+    const existingTexts = await readTextElements();
+    const result = await translate(base64Image, isDummyKey(apiKey) ? [] : existingTexts);
     if (!result) {
       setStatus("error");
       setError({ code: "claude_failed", message: "Translation service unavailable." });
       return;
     }
 
-    if (isDummyKey(apiKey)) {
-      setEntries(result.map((e) => ({ ...e, existsInDesign: true })));
-    } else {
-      const existingSet = new Set(existingTexts.map((t) => t.trim()));
-      setEntries(result.map((e) => ({ ...e, existsInDesign: existingSet.has(e.original.trim()) })));
-    }
+    const existingSet = new Set(existingTexts.map((t) => t.trim()));
+    setEntries(result.map((e) => ({ ...e, existsInDesign: existingSet.has(e.original.trim()) })));
     setStatus("reviewing");
   }, [runExport, translate]);
 
@@ -86,7 +83,7 @@ export function App() {
   const handleApplyAll = useCallback(async (variant: TranslationVariant) => {
     const unapplied = entries
       .map((e, i) => ({ entry: e, index: i }))
-      .filter(({ entry }) => !entry.appliedVariant);
+      .filter(({ entry }) => !entry.appliedVariant && entry.existsInDesign !== false);
 
     if (unapplied.length === 0) return;
 

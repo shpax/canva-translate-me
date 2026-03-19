@@ -11,4 +11,10 @@ export default [
     ],
   },
   ...canvaPlugin.configs.apps,
+  {
+    rules: {
+      // We use explicit message IDs for maintainability
+      "formatjs/no-id": "off",
+    },
+  },
 ];

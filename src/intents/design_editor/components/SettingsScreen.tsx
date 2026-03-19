@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
+  Column,
+  Columns,
   FormField,
   Rows,
   Select,
@@ -23,14 +25,19 @@ function maskKey(key: string): string {
   return key.slice(0, 10) + "••••" + key.slice(-4);
 }
 
-const LANGUAGE_OPTIONS = LANGUAGES.map((l) => ({ value: l.code, label: l.label }));
+const LANGUAGE_OPTIONS = LANGUAGES.map((l) => ({
+  value: l.code,
+  label: l.label,
+}));
 
 export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
   const [newKey, setNewKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [error, setError] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [langCode, setLangCode] = useState(() => settingsStore.getLanguageCode());
+  const [langCode, setLangCode] = useState(() =>
+    settingsStore.getLanguageCode(),
+  );
   const intl = useIntl();
 
   const currentKey = apiKeyStore.get();
@@ -41,7 +48,10 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
   }
 
   function handleSave() {
-    if (!newKey.trim().startsWith("sk-ant-") && newKey.trim() !== DUMMY_API_KEY) {
+    if (
+      !newKey.trim().startsWith("sk-ant-") &&
+      newKey.trim() !== DUMMY_API_KEY
+    ) {
       setError(true);
       return;
     }
@@ -57,29 +67,67 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
     onKeyCleared();
   }
 
-  const backAriaLabel = intl.formatMessage({ id: "settings.backAriaLabel", defaultMessage: "Back" });
-  const titleText = intl.formatMessage({ id: "settings.title", defaultMessage: "Settings" });
-  const langFieldLabel = intl.formatMessage({ id: "settings.langFieldLabel", defaultMessage: "Target language" });
-  const currentKeyLabel = intl.formatMessage({ id: "settings.currentKeyLabel", defaultMessage: "Current key" });
-  const replaceFieldLabel = intl.formatMessage({ id: "settings.replaceFieldLabel", defaultMessage: "Replace with a new key" });
-  const errorText = intl.formatMessage({ id: "settings.error", defaultMessage: "Must start with sk-ant-" });
-  const placeholder = intl.formatMessage({ id: "settings.placeholder", defaultMessage: "sk-ant-..." });
-  const showKeyLabel = intl.formatMessage({ id: "settings.showKey", defaultMessage: "Show key" });
-  const hideKeyLabel = intl.formatMessage({ id: "settings.hideKey", defaultMessage: "Hide key" });
-  const savedLabel = intl.formatMessage({ id: "settings.savedButton", defaultMessage: "Saved!" });
-  const saveNewKeyLabel = intl.formatMessage({ id: "settings.saveNewKeyButton", defaultMessage: "Save new key" });
-  const clearLabel = intl.formatMessage({ id: "settings.clearButton", defaultMessage: "Clear saved key" });
+  const titleText = intl.formatMessage({
+    id: "settings.title",
+    defaultMessage: "Settings",
+  });
+  const langFieldLabel = intl.formatMessage({
+    id: "settings.langFieldLabel",
+    defaultMessage: "Target language",
+  });
+  const currentKeyLabel = intl.formatMessage({
+    id: "settings.currentKeyLabel",
+    defaultMessage: "Current key",
+  });
+  const replaceFieldLabel = intl.formatMessage({
+    id: "settings.replaceFieldLabel",
+    defaultMessage: "Replace with a new key",
+  });
+  const errorText = intl.formatMessage({
+    id: "settings.error",
+    defaultMessage: "Must start with sk-ant-",
+  });
+  const placeholder = intl.formatMessage({
+    id: "settings.placeholder",
+    defaultMessage: "sk-ant-...",
+  });
+  const showKeyLabel = intl.formatMessage({
+    id: "settings.showKey",
+    defaultMessage: "Show key",
+  });
+  const hideKeyLabel = intl.formatMessage({
+    id: "settings.hideKey",
+    defaultMessage: "Hide key",
+  });
+  const savedLabel = intl.formatMessage({
+    id: "settings.savedButton",
+    defaultMessage: "Saved!",
+  });
+  const saveNewKeyLabel = intl.formatMessage({
+    id: "settings.saveNewKeyButton",
+    defaultMessage: "Save new key",
+  });
+  const clearLabel = intl.formatMessage({
+    id: "settings.clearButton",
+    defaultMessage: "Clear saved key",
+  });
+  const backLabel = intl.formatMessage({
+    id: "settings.closeButton",
+    defaultMessage: "Close",
+  });
 
   return (
     <Rows spacing="2u">
-      <Button
-        variant="tertiary"
-        icon={() => <span>←</span>}
-        onClick={onBack}
-        ariaLabel={backAriaLabel}
-      />
-
-      <Title size="small">{titleText}</Title>
+      <Columns spacing="1u" alignY="center">
+        <Column>
+          <Title size="small">{titleText}</Title>
+        </Column>
+        <Column width="content">
+          <Button variant="tertiary" onClick={onBack}>
+            {backLabel}
+          </Button>
+        </Column>
+      </Columns>
 
       <FormField
         label={langFieldLabel}
@@ -95,7 +143,9 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
       />
 
       <Rows spacing="1u">
-        <Text size="small" tone="secondary">{currentKeyLabel}</Text>
+        <Text size="small" tone="secondary">
+          {currentKeyLabel}
+        </Text>
         <Text size="small">{maskKey(currentKey)}</Text>
       </Rows>
 
