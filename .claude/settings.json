@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/maksym/personal-projects/canva-translator/src/intents/design_editor/lib)",
+      "Bash(mkdir -p /Users/maksym/personal-projects/canva-translator/src/intents/design_editor/hooks)",
+      "Bash(mkdir -p /Users/maksym/personal-projects/canva-translator/src/intents/design_editor/components)",
+      "Bash(/Users/maksym/personal-projects/canva-translator/.env.template:*)",
+      "Bash(npx tsc:*)",
+      "Bash(xargs cat:*)",
+      "Bash(xargs grep:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run:*)",
+      "Bash(/Users/maksym/personal-projects/canva-translator/.env:*)",
+      "Bash(grep -r \"Select\\\\|OptionList\\\\|Combobox\" /Users/maksym/personal-projects/canva-translator/node_modules/@canva/app-ui-kit/dist/esm/ui/apps/developing/ui_kit/components/ --include=*.d.ts -l)"
+    ]
+  }
+}
