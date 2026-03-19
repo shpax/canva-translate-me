@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, FormField, Rows, Text, Title } from "@canva/app-ui-kit";
+import { useState } from "react";
+import { Button, FormField, Rows, Text, TextInput, Title } from "@canva/app-ui-kit";
 import { useIntl } from "react-intl";
 import { apiKeyStore } from "../lib/apiKeyStore";
 import { DUMMY_API_KEY } from "../lib/mockTranslation";
@@ -10,7 +10,6 @@ export interface KeySetupScreenProps {
 
 export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
   const [value, setValue] = useState("");
-  const [showKey, setShowKey] = useState(false);
   const [error, setError] = useState(false);
   const intl = useIntl();
 
@@ -23,15 +22,13 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
     onSaved();
   }
 
-  const titleText = intl.formatMessage({ id: "keySetup.title", defaultMessage: "Setup — Anthropic API Key" });
-  const descText = intl.formatMessage({ id: "keySetup.description", defaultMessage: "Your key is stored only in this browser (localStorage). It is never sent anywhere except directly to Anthropic." });
-  const fieldLabel = intl.formatMessage({ id: "keySetup.fieldLabel", defaultMessage: "Anthropic API key" });
-  const errorText = intl.formatMessage({ id: "keySetup.error", defaultMessage: "Must start with sk-ant-" });
-  const placeholder = intl.formatMessage({ id: "keySetup.placeholder", defaultMessage: "sk-ant-..." });
-  const showKeyLabel = intl.formatMessage({ id: "keySetup.showKey", defaultMessage: "Show key" });
-  const hideKeyLabel = intl.formatMessage({ id: "keySetup.hideKey", defaultMessage: "Hide key" });
-  const saveLabel = intl.formatMessage({ id: "keySetup.saveButton", defaultMessage: "Save and continue" });
-  const helpText = intl.formatMessage({ id: "keySetup.helpText", defaultMessage: "Get your key at console.anthropic.com → API Keys" });
+  const titleText = intl.formatMessage({ id: "keySetup.title", description: "Heading on the API key setup screen", defaultMessage: "Setup — Anthropic API Key" });
+  const descText = intl.formatMessage({ id: "keySetup.description", description: "Explanation of how the API key is stored and used", defaultMessage: "Your key is stored only in this browser (localStorage). It is never sent anywhere except directly to Anthropic." });
+  const fieldLabel = intl.formatMessage({ id: "keySetup.fieldLabel", description: "Label for the API key input field", defaultMessage: "Anthropic API key" });
+  const errorText = intl.formatMessage({ id: "keySetup.error", description: "Validation error shown when the API key format is invalid", defaultMessage: "Must start with sk-ant-" });
+  const placeholder = intl.formatMessage({ id: "keySetup.placeholder", description: "Placeholder text for the API key input", defaultMessage: "sk-ant-..." });
+  const saveLabel = intl.formatMessage({ id: "keySetup.saveButton", description: "Button to save the API key and proceed", defaultMessage: "Save and continue" });
+  const helpText = intl.formatMessage({ id: "keySetup.helpText", description: "Helper text directing users to get their API key", defaultMessage: "Get your key at console.anthropic.com → API Keys" });
 
   return (
     <Rows spacing="2u">
@@ -42,33 +39,18 @@ export function KeySetupScreen({ onSaved }: KeySetupScreenProps) {
         label={fieldLabel}
         error={error ? errorText : undefined}
         control={(props) => (
-          <input
+          <TextInput
             {...props}
-            type={showKey ? "text" : "password"}
             value={value}
             placeholder={placeholder}
-            onChange={(e) => {
-              setValue(e.target.value);
+            error={!!error}
+            onChange={(val) => {
+              setValue(val);
               setError(false);
-            }}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: "8px",
-              borderRadius: "4px",
-              border: error ? "1px solid var(--ui-kit-color-content-critical)" : "1px solid var(--ui-kit-color-border-default)",
-              background: "var(--ui-kit-color-bg-default)",
-              color: "var(--ui-kit-color-content-primary)",
-              fontSize: "13px",
             }}
           />
         )}
       />
-
-      <Button variant="tertiary" onClick={() => setShowKey((v) => !v)}>
-        {showKey ? hideKeyLabel : showKeyLabel}
-      </Button>
 
       <Button variant="primary" onClick={handleSave} stretch disabled={!value.trim()}>
         {saveLabel}

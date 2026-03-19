@@ -7,6 +7,7 @@ import {
   Rows,
   Select,
   Text,
+  TextInput,
   Title,
 } from "@canva/app-ui-kit";
 import { useIntl } from "react-intl";
@@ -32,7 +33,6 @@ const LANGUAGE_OPTIONS = LANGUAGES.map((l) => ({
 
 export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
   const [newKey, setNewKey] = useState("");
-  const [showKey, setShowKey] = useState(false);
   const [error, setError] = useState(false);
   const [saved, setSaved] = useState(false);
   const [langCode, setLangCode] = useState(() =>
@@ -67,54 +67,16 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
     onKeyCleared();
   }
 
-  const titleText = intl.formatMessage({
-    id: "settings.title",
-    defaultMessage: "Settings",
-  });
-  const langFieldLabel = intl.formatMessage({
-    id: "settings.langFieldLabel",
-    defaultMessage: "Target language",
-  });
-  const currentKeyLabel = intl.formatMessage({
-    id: "settings.currentKeyLabel",
-    defaultMessage: "Current key",
-  });
-  const replaceFieldLabel = intl.formatMessage({
-    id: "settings.replaceFieldLabel",
-    defaultMessage: "Replace with a new key",
-  });
-  const errorText = intl.formatMessage({
-    id: "settings.error",
-    defaultMessage: "Must start with sk-ant-",
-  });
-  const placeholder = intl.formatMessage({
-    id: "settings.placeholder",
-    defaultMessage: "sk-ant-...",
-  });
-  const showKeyLabel = intl.formatMessage({
-    id: "settings.showKey",
-    defaultMessage: "Show key",
-  });
-  const hideKeyLabel = intl.formatMessage({
-    id: "settings.hideKey",
-    defaultMessage: "Hide key",
-  });
-  const savedLabel = intl.formatMessage({
-    id: "settings.savedButton",
-    defaultMessage: "Saved!",
-  });
-  const saveNewKeyLabel = intl.formatMessage({
-    id: "settings.saveNewKeyButton",
-    defaultMessage: "Save new key",
-  });
-  const clearLabel = intl.formatMessage({
-    id: "settings.clearButton",
-    defaultMessage: "Clear saved key",
-  });
-  const backLabel = intl.formatMessage({
-    id: "settings.closeButton",
-    defaultMessage: "Close",
-  });
+  const titleText = intl.formatMessage({ id: "settings.title", description: "Heading on the settings screen", defaultMessage: "Settings" });
+  const langFieldLabel = intl.formatMessage({ id: "settings.langFieldLabel", description: "Label for the target language dropdown", defaultMessage: "Target language" });
+  const currentKeyLabel = intl.formatMessage({ id: "settings.currentKeyLabel", description: "Label above the masked display of the currently saved API key", defaultMessage: "Current key" });
+  const replaceFieldLabel = intl.formatMessage({ id: "settings.replaceFieldLabel", description: "Label for the input field to enter a new API key", defaultMessage: "Replace with a new key" });
+  const errorText = intl.formatMessage({ id: "settings.error", description: "Validation error when the entered API key has an invalid format", defaultMessage: "Must start with sk-ant-" });
+  const placeholder = intl.formatMessage({ id: "settings.placeholder", description: "Placeholder text for the API key input in settings", defaultMessage: "sk-ant-..." });
+  const savedLabel = intl.formatMessage({ id: "settings.savedButton", description: "Save button label shown briefly after a successful key save", defaultMessage: "Saved!" });
+  const saveNewKeyLabel = intl.formatMessage({ id: "settings.saveNewKeyButton", description: "Button to save the newly entered API key", defaultMessage: "Save new key" });
+  const clearLabel = intl.formatMessage({ id: "settings.clearButton", description: "Button to delete the saved API key", defaultMessage: "Clear saved key" });
+  const backLabel = intl.formatMessage({ id: "settings.closeButton", description: "Button to close the settings screen and return to the home screen", defaultMessage: "Close" });
 
   return (
     <Rows spacing="2u">
@@ -153,36 +115,19 @@ export function SettingsScreen({ onBack, onKeyCleared }: SettingsScreenProps) {
         label={replaceFieldLabel}
         error={error ? errorText : undefined}
         control={(props) => (
-          <input
+          <TextInput
             {...props}
-            type={showKey ? "text" : "password"}
             value={newKey}
             placeholder={placeholder}
-            onChange={(e) => {
-              setNewKey(e.target.value);
+            error={!!error}
+            onChange={(val) => {
+              setNewKey(val);
               setError(false);
               setSaved(false);
-            }}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: "8px",
-              borderRadius: "4px",
-              border: error
-                ? "1px solid var(--ui-kit-color-content-critical)"
-                : "1px solid var(--ui-kit-color-border-default)",
-              background: "var(--ui-kit-color-bg-default)",
-              color: "var(--ui-kit-color-content-primary)",
-              fontSize: "13px",
             }}
           />
         )}
       />
-
-      <Button variant="tertiary" onClick={() => setShowKey((v) => !v)}>
-        {showKey ? hideKeyLabel : showKeyLabel}
-      </Button>
 
       <Button
         variant="primary"

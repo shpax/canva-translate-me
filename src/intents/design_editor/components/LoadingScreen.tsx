@@ -11,8 +11,8 @@ export function LoadingScreen({ status }: LoadingScreenProps) {
   const intl = useIntl();
 
   const labels: Record<Extract<AppStatus, "exporting" | "translating">, string> = {
-    exporting: intl.formatMessage({ id: "loading.exporting", defaultMessage: "Exporting design…" }),
-    translating: intl.formatMessage({ id: "loading.translating", defaultMessage: "Analyzing image with Claude…" }),
+    exporting: intl.formatMessage({ id: "loading.exporting", description: "Status text shown while the design is being exported", defaultMessage: "Exporting design…" }),
+    translating: intl.formatMessage({ id: "loading.translating", description: "Status text shown while Claude AI is processing the image", defaultMessage: "Analyzing image with Claude…" }),
   };
 
   return (

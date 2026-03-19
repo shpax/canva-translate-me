@@ -34,20 +34,20 @@ export function ReviewTable({
   const canApplyAny = entries.some((e) => !e.appliedVariant && e.existsInDesign !== false);
 
   const elementsFoundText = intl.formatMessage(
-    { id: "review.elementsFound", defaultMessage: "{count} elements found" },
+    { id: "review.elementsFound", description: "Count of text elements found in the design", defaultMessage: "{count} elements found" },
     { count: entries.length },
   );
-  const cancelLabel = intl.formatMessage({ id: "review.cancelButton", defaultMessage: "Cancel" });
-  const useALabel = intl.formatMessage({ id: "review.useAButton", defaultMessage: "Use A" });
-  const useBLabel = intl.formatMessage({ id: "review.useBButton", defaultMessage: "Use B" });
-  const useCLabel = intl.formatMessage({ id: "review.useCButton", defaultMessage: "Use C" });
-  const resetLabel = intl.formatMessage({ id: "review.resetButton", defaultMessage: "Reset" });
+  const cancelLabel = intl.formatMessage({ id: "review.cancelButton", description: "Button to cancel the review and revert all changes", defaultMessage: "Cancel" });
+  const useALabel = intl.formatMessage({ id: "review.useAButton", description: "Button to apply translation variant A to all unapplied entries", defaultMessage: "Use A" });
+  const useBLabel = intl.formatMessage({ id: "review.useBButton", description: "Button to apply translation variant B to all unapplied entries", defaultMessage: "Use B" });
+  const useCLabel = intl.formatMessage({ id: "review.useCButton", description: "Button to apply translation variant C to all unapplied entries", defaultMessage: "Use C" });
+  const resetLabel = intl.formatMessage({ id: "review.resetButton", description: "Button to revert all applied translations back to the originals", defaultMessage: "Reset" });
   const finishLabel = appliedCount > 0
     ? intl.formatMessage(
-        { id: "review.finishWithCount", defaultMessage: "Finish ({appliedCount} of {total} applied)" },
+        { id: "review.finishWithCount", description: "Finish button showing how many entries were applied out of the total", defaultMessage: "Finish ({appliedCount} of {total} applied)" },
         { appliedCount, total: entries.length },
       )
-    : intl.formatMessage({ id: "review.finishWithoutApplying", defaultMessage: "Finish without applying" });
+    : intl.formatMessage({ id: "review.finishWithoutApplying", description: "Finish button shown when no translations have been applied yet", defaultMessage: "Finish without applying" });
 
   return (
     <div className={styles.scrollContainer}>
@@ -136,10 +136,10 @@ interface TranslationRowProps {
 function TranslationRow({ entry, onApply }: TranslationRowProps) {
   const intl = useIntl();
 
-  const appliedBadgeText = intl.formatMessage({ id: "row.appliedBadge", defaultMessage: "Applied" });
-  const applyLabel = intl.formatMessage({ id: "row.applyButton", defaultMessage: "Apply" });
-  const applyErrorText = intl.formatMessage({ id: "row.applyError", defaultMessage: " — could not find this text in the design" });
-  const notFoundText = intl.formatMessage({ id: "row.notFound", defaultMessage: " — not found in design" });
+  const appliedBadgeText = intl.formatMessage({ id: "row.appliedBadge", description: "Badge shown on a translation entry that has been applied to the design", defaultMessage: "Applied" });
+  const applyLabel = intl.formatMessage({ id: "row.applyButton", description: "Button to apply a single translation variant to the design", defaultMessage: "Apply" });
+  const applyErrorText = intl.formatMessage({ id: "row.applyError", description: "Suffix shown when applying a translation failed to find the text", defaultMessage: " — could not find this text in the design" });
+  const notFoundText = intl.formatMessage({ id: "row.notFound", description: "Suffix shown when the original text does not exist in the design", defaultMessage: " — not found in design" });
 
   if (entry.appliedVariant) {
     return (
